@@ -1,5 +1,6 @@
 package com.android.newsapp.ui.screen.home
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,6 +26,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -47,12 +49,18 @@ import com.android.newsapp.ui.navigation.Screen
 import com.android.newsapp.ui.theme.black
 import com.android.newsapp.ui.theme.grey
 import com.android.newsapp.ui.theme.white
+import androidx.hilt.navigation.compose.hiltViewModel
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavController = rememberNavController(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
+    val series = homeViewModel.series.collectAsState().value
+    val loading = homeViewModel.loading.collectAsState().value
+
     val (search, setSearch) = remember {
         mutableStateOf(
             ""
@@ -131,12 +139,16 @@ fun HomeScreen(
                         )
                     },
                     colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = white,
-                        unfocusedIndicatorColor = white,
-                        disabledIndicatorColor = white,
-                        cursorColor = black,
                         textColor = black,
-                        placeholderColor = grey,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent,
+                        cursorColor = black,
+                        focusedLabelColor = Color.Transparent,
+                        unfocusedLabelColor = Color.Transparent,
+                        disabledLabelColor = Color.Transparent,
+                        errorLabelColor = Color.Transparent,
                     ),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text
@@ -184,79 +196,82 @@ fun HomeScreen(
             }
         }
 
-        items(5) {
-            Card(
-                modifier = Modifier
-                    .height(150.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = white,
-                )
-            ) {
-                Row(
+        series.map {
+            item {
+                Card(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(14.dp)
-                        .clickable {
-                            navController.navigate(Screen.DetailScreen.route + "/$it")
-                        },
-                ) {
-                    AsyncImage(
-                        model = "https://www.simplilearn.com/ice9/free_resources_article_thumb/what_is_image_Processing.jpg",
-                        contentDescription = "Image",
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(120.dp)
-                            .clip(RoundedCornerShape(14.dp)),
-                        contentScale = ContentScale.FillHeight
+                        .height(150.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = white,
                     )
-                    Spacer(modifier = Modifier.width(14.dp))
-                    Column(
+                ) {
+                    Row(
                         modifier = Modifier
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.Start,
-
-                        ) {
-                        Text(
-                            text = "CNBC",
-                            color = grey,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Medium,
-                            lineHeight = 12.sp
+                            .fillMaxWidth()
+                            .padding(14.dp)
+                            .clickable {
+                                navController.navigate(Screen.DetailScreen.route + "/${it?.id}")
+                            },
+                    ) {
+                        AsyncImage(
+                            model = it?.imageThumbnailPath ?: "",
+                            contentDescription = "Image",
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .width(120.dp)
+                                .clip(RoundedCornerShape(14.dp)),
+                            contentScale = ContentScale.FillWidth
                         )
+                        Spacer(modifier = Modifier.width(14.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.Start,
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                            ) {
+                            Text(
+                                text = it?.status ?: "",
+                                color = grey,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Medium,
+                                lineHeight = 12.sp
+                            )
 
-                        Text(
-                            text = "The 10 most important things in the world right now",
-                            color = black,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            lineHeight = 14.sp
-                        )
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        Text(
-                            text = "The 10 most important things in the world right now",
-                            color = grey,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Light,
-                            lineHeight = 12.sp
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "20 April 2023",
-                            color = grey,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Medium,
-                            lineHeight = 12.sp
-                        )
+                            Text(
+                                text = it?.name ?: "",
+                                color = black,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium,
+                                lineHeight = 14.sp
+                            )
+
+                            Text(
+                                text = it?.permalink ?: "",
+                                color = grey,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Light,
+                                lineHeight = 12.sp
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = it?.startDate ?: "",
+                                color = grey,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Medium,
+                                lineHeight = 12.sp
+                            )
+                        }
                     }
+
                 }
 
+                Spacer(modifier = Modifier.height(16.dp))
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
         }
+
     }
 }
 

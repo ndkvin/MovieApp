@@ -1,9 +1,8 @@
-package com.android.newsapp.ui.screen.home
+package com.android.newsapp.ui.screen.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.newsapp.data.model.response.GetAllSeries
-import com.android.newsapp.data.model.response.TvShowsItem
+import com.android.newsapp.data.model.response.GetDetailSeries
 import com.android.newsapp.data.repository.SeriesRepository
 import com.android.newsapp.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,26 +11,23 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class DetailViewModel @Inject constructor(
     private val seriesRepository: SeriesRepository,
 ) : ViewModel() {
     var loading = MutableStateFlow(false)
-    var series = MutableStateFlow(listOf<TvShowsItem?>(null))
+    var series = MutableStateFlow<Result<GetDetailSeries>>(Result.Empty)
+    var seriesData = MutableStateFlow<GetDetailSeries?>(null)
 
-    init {
-        getAllSeries()
-    }
-
-    fun getAllSeries() {
+    fun getDetailSeries(id: Int) {
         viewModelScope.launch {
             loading.value = true
-            val response = seriesRepository.getAllSeries()
+            val response = seriesRepository.getDetailSeries(id)
+            series.value = response
+
             if (response is Result.Success) {
-                 series.value  = response?.data?.tvShows!!
+                seriesData.value = response.data
             }
             loading.value = false
         }
     }
-
-
 }
