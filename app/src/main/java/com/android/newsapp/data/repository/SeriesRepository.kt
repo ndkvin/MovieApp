@@ -24,4 +24,12 @@ class SeriesRepository @Inject constructor(
             return Result.Error(e.message.toString())
         }
     }
+
+    suspend fun searchSeries(keyword : String = "") : Result<GetAllSeries> {
+        return try {
+            return Result.Success(apiSeriesInterface.searchSeries(keyword.lowercase()))
+        } catch (e : Exception) {
+            return Result.Error(e.message.toString())
+        }
+    }
 }

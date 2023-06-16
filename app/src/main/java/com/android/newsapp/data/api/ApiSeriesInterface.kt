@@ -8,12 +8,15 @@ import retrofit2.http.Query
 interface ApiSeriesInterface {
 
     @GET("/api/most-popular")
-    suspend fun getAllSeries(
-        @Query("q") keyword: String = "",
-    ): GetAllSeries
+    suspend fun getAllSeries(): GetAllSeries
 
     @GET("/api/show-details")
     suspend fun getDetailSeries(
-        @Query("q") keyword: Int = 0,
+        @Query("q") id: Int = 0,
     ): GetDetailSeries
+
+    @GET("/api/search")
+    suspend fun searchSeries(
+        @Query("q") keyword: String = "",
+    ): GetAllSeries
 }

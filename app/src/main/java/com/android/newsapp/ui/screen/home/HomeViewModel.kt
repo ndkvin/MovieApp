@@ -33,5 +33,16 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun searchSeries(keyword: String) {
+        viewModelScope.launch {
+            loading.value = true
+            val response = seriesRepository.searchSeries(keyword)
+            if (response is Result.Success) {
+                 series.value  = response?.data?.tvShows!!
+            }
+            loading.value = false
+        }
+    }
+
 
 }

@@ -74,7 +74,9 @@ fun HomeScreen(
     }
 
     search.useDebounce(1000, onChange = {
-
+        homeViewModel.searchSeries(
+            it
+        )
     })
 
     fun changeCategory(id: Int) {
@@ -100,7 +102,7 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = "News App",
+                    text = "Movie App",
                     color = Color.Black,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
@@ -166,6 +168,7 @@ fun HomeScreen(
                             categoryData = it,
                             onClick = { id ->
                                 changeCategory(id)
+                                homeViewModel.searchSeries(it.value)
                             }
                         )
                         Spacer(modifier = Modifier.width(7.dp))

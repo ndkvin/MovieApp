@@ -30,32 +30,32 @@ data class CategoryData(
 val ListCategoryData = listOf(
     CategoryData(
         id = 0,
-        label = "Art",
-        value = "art",
+        label = "Action",
+        value = "action",
         isActive = false
     ),
     CategoryData(
         id = 1,
-        label = "Entertain",
-        value = "entertainment",
+        label = "Comedy",
+        value = "comedy",
         isActive = false
     ),
     CategoryData(
         id = 2,
-        label = "Sightings",
-        value = "sightings",
+        label = "Drama",
+        value = "drama",
         isActive = false
     ),
     CategoryData(
         id = 3,
-        label = "Food",
-        value = "food",
+        label = "Superhero",
+        value = "superhero",
         isActive = false
     ),
     CategoryData(
         id = 4,
-        label = "Shopping",
-        value = "shopping",
+        label = "Horror",
+        value = "horror",
         isActive = false
     ),
 )
